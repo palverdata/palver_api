@@ -19,7 +19,7 @@ You can install the development version of palver:
 ``` r
 install.packages('devtools')
 
-devtools::install_github(repo = 'palverdata/palver_r_package')
+devtools::install_github(repo = 'palverdata/palver_api')
 ```
 
 ## Example
