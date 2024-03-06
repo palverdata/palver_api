@@ -63,7 +63,7 @@ request_messages <- function(
                              ocr_lang = NULL,
                              tags = NULL,
                              type_label = NULL,
-                             sortField = c('datetime', 'fowarding_score'),
+                             sortField = c('datetime', 'forwarding_score'),
                              sortOrder = c('desc','asc'),
                              token){
 
