@@ -25,7 +25,9 @@ The Palver Data API package provide functions for simple usage of our data by cl
 You can install the development version of palver:
 
 ``` r
-install.packages('palver')
+install.packages('devtools')
+
+devtools::install_github(repo = 'palverdata/palver_api')
 ```
 
 ## Example

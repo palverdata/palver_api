@@ -17,7 +17,9 @@ TikTok profiles, Reddit forums, radio stations and much more.
 You can install the development version of palver:
 
 ``` r
-install.packages('palver')
+install.packages('devtools')
+
+devtools::install_github(repo = 'palverdata/palver_api')
 ```
 
 ## Example
