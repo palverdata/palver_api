@@ -20,5 +20,5 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/mavicrz/palver
-BugReports: https://github.com/mavicrz/palver/issues
+URL: https://github.com/palverdata/palver_r_package
+BugReports: https://github.com/palverdata/palver_r_package/issues
