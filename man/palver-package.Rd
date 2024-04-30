@@ -8,14 +8,6 @@
 \description{
 Palver Data API in R is a package for simple usage of Palver Data in R by our clients.
 }
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/palverdata/palver_r_package}
-  \item Report bugs at \url{https://github.com/palverdata/palver_r_package/issues}
-}
-
-}
 \author{
 \strong{Maintainer}: Maria Cruz \email{maria.cruz@palver.com.br} (\href{https://orcid.org/0000-0001-7033-6827}{ORCID})
 
