@@ -16,7 +16,8 @@ Imports:
     purrr,
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    lubridate
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
