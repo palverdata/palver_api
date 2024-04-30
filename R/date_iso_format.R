@@ -11,22 +11,22 @@
 #' @return A datetime in ISO format
 #' @export
 #'
-#' @examples
 date_iso_format <- function(day,
                             month,
                             year,
-                            hour = NULL,
-                            min = NULL,
-                            sec = NULL,
-                            timezone){
+                            hour = 0,
+                            min = 0,
+                            sec = 0,
+                            timezone = 'UTC'){
 
-  datetime <- lubridate::make_datetime(year = year,
-                           month = month,
-                           day = day,
-                           hour = hour,
-                           min = min,
-                           sec = sec,
-                           tz = timezone) |>
+  datetime <- lubridate::make_datetime(
+    year = year,
+    month = month,
+    day = day,
+    hour = hour,
+    min = min,
+    sec = sec,
+    tz = timezone) |>
     lubridate::format_ISO8601()
 
   return(datetime)

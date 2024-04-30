@@ -66,7 +66,9 @@
 </h2>
 <p>You can install the development version of palver:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'palver'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'devtools'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="st">'palverdata/palver_api'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -84,7 +86,11 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The code below will not work if you do not have a token</span></span>
 <span></span>
-<span><span class="co"># request_messages(query = '(fish OR sea OR boat) AND NOT mermaid', source = 'telegram', lang = 'en', startDate = '2021-01-01T00:00:00.000Z', endDate = '2023-03-02T23:59:59.000Z', token = my_token)</span></span></code></pre></div>
+<span><span class="va">start_date</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/date_iso_format.html">date_iso_format</a></span><span class="op">(</span>day <span class="op">=</span> <span class="fl">01</span>, month <span class="op">=</span> <span class="fl">01</span>, year <span class="op">=</span> <span class="fl">2021</span>, timezone <span class="op">=</span> <span class="st">'America/Sao_Paulo'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">end_date</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/date_iso_format.html">date_iso_format</a></span><span class="op">(</span>day <span class="op">=</span> <span class="fl">02</span>, month <span class="op">=</span> <span class="fl">01</span>, year <span class="op">=</span> <span class="fl">2021</span>, timezone <span class="op">=</span> <span class="st">'America/Sao_Paulo'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># request_messages(query = '(fish OR sea OR boat) AND NOT mermaid', source = 'telegram', lang = 'en', startDate = start_date, endDate = end_date, token = my_token)</span></span></code></pre></div>
 <p>Other request functions works as the same: you can request for chat data, trends and messages.</p>
 </div>
 </div>
