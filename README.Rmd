@@ -52,7 +52,11 @@ With your token in hands, we can show how you can make requests in our data set 
 ```{r example2}
 # The code below will not work if you do not have a token
 
-# request_messages(query = '(fish OR sea OR boat) AND NOT mermaid', source = 'telegram', lang = 'en', startDate = '2021-01-01T00:00:00.000Z', endDate = '2023-03-02T23:59:59.000Z', token = my_token)
+start_date <- date_iso_format(day = 01, month = 01, year = 2021, timezone = 'America/Sao_Paulo')
+
+end_date <- date_iso_format(day = 02, month = 01, year = 2021, timezone = 'America/Sao_Paulo')
+
+# request_messages(query = '(fish OR sea OR boat) AND NOT mermaid', source = 'telegram', lang = 'en', startDate = start_date, endDate = end_date, token = my_token)
 ```
 
 Other request functions works as the same: you can request for chat data, trends and messages.
