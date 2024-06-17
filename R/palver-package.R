@@ -5,5 +5,5 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @importFrom magrittr %$%
-## usethis namespace: end
+## usethis namespace: ends
 NULL
