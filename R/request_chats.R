@@ -17,42 +17,46 @@ request_chats <- function(
     query = NULL,
     id = NULL,
     name = NULL,
-    source = NULL,
+    source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
     sortField = c('name', 'participants'),
     sortOrder = c('desc','asc'),
     token){
 
   sortField <- match.arg(sortField)
   sortOrder <- match.arg(sortOrder)
+  source <- match.arg(source)
 
   page <- 1
   perPage <- 1000
 
   fetch_chats <- function(query,
-                          id,
+                          id = NULL,
                           page = 1,
                           perPage = 1000,
                           name = NULL,
-                          source = NULL,
+                          source =  c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
                           sortField = c('name', 'participants'),
                           sortOrder = c('desc','asc'),
                           token){
+    url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/chats')
 
-    parameters <- list('query' = query,
-                       'id' = id,
+    parameters <- tibble::tibble('query' = query,
+                       'id'= id,
                        'name' = name,
                        'page' = page,
                        'perPage' = perPage,
-                       'source' = source,
                        'sortField' = sortField,
-                       'sortOrder' = sortOrder)
+                       'sortOrder' = sortOrder) %>%
+      jsonify::to_json(unbox = T, by = 'column')
 
-
-    httr::GET(url = 'https://api2.palver.com.br/rest/v2/chats',
-              config = httr::add_headers('Accept' = 'application/json',
-                                         'Content-Type' = 'application/json',
-                                         'Authorization' = stringr::str_c('Bearer ',token)),
-              query = parameters)}
+    httr2::request(url) |>
+      httr2::req_headers('Accept' = 'application/json',
+                         'Content-Type' = 'application/json') |>
+      httr2::req_auth_bearer_token(token) |>
+      httr2::req_method('POST') |>
+      httr2::req_body_raw(body = parameters, type = 'application/json') |>
+      httr2::req_perform()
+    }
 
   response <- fetch_chats(query = query,
                           id = id,
@@ -62,9 +66,9 @@ request_chats <- function(
                           sortOrder = sortOrder,
                           token = token)
 
-  if(httr::status_code(response)==200){
+  if(httr2::resp_status(response)==200){
 
-    meta <- httr::content(response) %>%
+    meta <- httr2::resp_body_json(response) %>%
       purrr::pluck('meta') %>%
       tibble::enframe()
 
@@ -81,7 +85,7 @@ request_chats <- function(
                                          sortOrder = sortOrder,
                                          token = token,
                                          page = .x) %>%
-                         httr::content(.) %>%
+                         httr2::resp_body_json(.) %>%
                          purrr::pluck('data') %>%
                          tibble::enframe() %>%
                          tidyr::unnest_wider('value', names_repair = 'minimal')
@@ -94,10 +98,8 @@ request_chats <- function(
 
   else stop(
     stringr::str_c(
-      httr::content(response),
-      ' [', httr::status_code(response),']'
+      httr2::resp_status(response),
+      ' [', httr2::resp_status_desc(response),']'
     )
   )
-
-
 }

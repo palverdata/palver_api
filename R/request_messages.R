@@ -2,13 +2,15 @@
 #'
 #' @param query Query in lucene's syntax
 #' @param country Country ISO code
-#' @param region Brazilian region code, (only if country is BR)
+#' @param region  Region code
 #' @param startDate Start date in ISO format
 #' @param endDate End date in ISO format
 #' @param sentiment Sentiment of the message
 #' @param source Source of the message
 #' @param is_spam Include or exclude messages classified as spam
 #' @param is_nsfw Include or exclude messages classified as NSFW
+#' @param is_news_related Iclude or exclude messages that are related to news
+#' @param is_potentially_misleading Include or exclude messages that contains news and are classified as potentially misleading
 #' @param lang Language of the message
 #' @param transcript_lang Language of the audio transcript
 #' @param ocr_lang Language of the image OCR
@@ -29,9 +31,11 @@ request_messages <- function(
     startDate,
     endDate,
     sentiment = NULL,
-    source = NULL,
+    source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
     is_spam = NULL,
     is_nsfw = NULL,
+    is_news_related = NULL,
+    is_potentially_misleading = NULL,
     lang = NULL,
     transcript_lang = NULL,
     ocr_lang = NULL,
@@ -43,9 +47,11 @@ request_messages <- function(
 
   sortField <- match.arg(sortField)
   sortOrder <- match.arg(sortOrder)
+  source <- match.arg(source)
 
   page <- 1
   perPage <- 1000
+
 
   fetch_messages <- function(query,
                              page = 1,
@@ -55,9 +61,11 @@ request_messages <- function(
                              startDate,
                              endDate,
                              sentiment = NULL,
-                             source = NULL,
+                             source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
                              is_spam = NULL,
                              is_nsfw = NULL,
+                             is_news_related = NULL,
+                             is_potentially_misleading = NULL,
                              lang = NULL,
                              transcript_lang = NULL,
                              ocr_lang = NULL,
@@ -67,7 +75,9 @@ request_messages <- function(
                              sortOrder = c('desc','asc'),
                              token){
 
-    parameters <- list('query' = query,
+    url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/messages')
+
+    parameters <- tibble::tibble('query' = query,
                        'page' = page,
                        'perPage' = perPage,
                        'country' = country,
@@ -75,7 +85,8 @@ request_messages <- function(
                        'startDate' = startDate,
                        'endDate' = endDate,
                        'sentiment' = sentiment,
-                       'source' = source,
+                       'is_news_related' = is_news_related,
+                       'is_potentially_misleading' = is_potentially_misleading,
                        'is_spam' = is_spam,
                        'is_nsfw' = is_nsfw,
                        'lang' = lang,
@@ -84,23 +95,31 @@ request_messages <- function(
                        'tags' = tags,
                        'type_label' = type_label,
                        'sortField' = sortField,
-                       'sortOrder' = sortOrder)
+                       'sortOrder' = sortOrder) %>%
+      jsonify::to_json(unbox = T, by = 'column')
+
+    httr2::request(url) |>
+      httr2::req_method('POST') |>
+      httr2::req_auth_bearer_token(token) |>
+      httr2::req_headers('Accept' = 'application/json',
+                         'Content-Type' = 'application/json') |>
+      httr2::req_body_raw(body = parameters, type = 'application/json') |>
+      httr2::req_perform()
 
 
-    httr::GET(url = 'https://api2.palver.com.br/rest/v2/messages',
-              config = httr::add_headers('Accept' = 'application/json',
-                                         'Authorization' = stringr::str_c('Bearer ',token)),
-              query = parameters)}
+    }
 
   response <- fetch_messages(query = query,
                              page = page,
                              perPage = perPage,
+                             source = source,
                              country = country,
                              region = region,
                              startDate = startDate,
                              endDate = endDate,
                              sentiment = sentiment,
-                             source = source,
+                             is_news_related = is_news_related,
+                             is_potentially_misleading = is_potentially_misleading,
                              is_spam = is_spam,
                              is_nsfw = is_nsfw,
                              lang = lang,
@@ -112,9 +131,9 @@ request_messages <- function(
                              sortOrder = sortOrder,
                              token = token)
 
-  if(httr::status_code(response)==200){
+  if(httr2::resp_status(response)==200){
 
-    meta <- httr::content(response) %>%
+    meta <- httr2::resp_body_json(response) %>%
       purrr::pluck('meta') %>%
       tibble::enframe()
 
@@ -135,6 +154,8 @@ request_messages <- function(
                                             source = source,
                                             is_spam = is_spam,
                                             is_nsfw = is_nsfw,
+                                            is_news_related = is_news_related,
+                                            is_potentially_misleading = is_potentially_misleading,
                                             lang = lang,
                                             transcript_lang = transcript_lang,
                                             ocr_lang = ocr_lang,
@@ -143,7 +164,7 @@ request_messages <- function(
                                             sortField = sortField,
                                             sortOrder = sortOrder,
                                             token = token) %>%
-                         httr::content(.) %>%
+                         httr2::resp_body_json(.) %>%
                          purrr::pluck('data') %>%
                          tibble::enframe() %>%
                          tidyr::unnest_wider('value', names_repair = 'minimal')
@@ -156,8 +177,8 @@ request_messages <- function(
 
   else stop(
     stringr::str_c(
-      httr::content(response),
-      ' [', httr::status_code(response),']'
+      httr2::resp_status(response),
+      ' [', httr2::resp_status_desc(response),']'
     )
   )
 
