@@ -8,7 +8,8 @@ request_chats(
   query = NULL,
   id = NULL,
   name = NULL,
-  source = NULL,
+  source = c("whatsapp", "telegram", "reddit", "tiktok", "press", "news", "radio.medias",
+    "televsion", "youtube", "twitter"),
   sortField = c("name", "participants"),
   sortOrder = c("desc", "asc"),
   token

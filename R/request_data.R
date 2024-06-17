@@ -9,6 +9,8 @@
 #' @param source Source of the message
 #' @param is_spam Include or exclude messages classified as spam
 #' @param is_nsfw Include or exclude messages classified as NSFW
+#' @param is_news_related Iclude or exclude messages that are related to news
+#' @param is_potentially_misleading Include or exclude messages that contains news and are classified as potentially misleading
 #' @param lang Language of the message
 #' @param transcript_lang Language of the audio transcript
 #' @param ocr_lang Language of the image OCR
