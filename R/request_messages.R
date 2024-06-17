@@ -113,22 +113,22 @@ request_messages <- function(
                              page = page,
                              perPage = perPage,
                              source = source,
-                             country = country,
-                             region = region,
+                             country = NULL,
+                             region = NULL,
                              startDate = startDate,
                              endDate = endDate,
-                             sentiment = sentiment,
-                             is_news_related = is_news_related,
-                             is_potentially_misleading = is_potentially_misleading,
-                             is_spam = is_spam,
-                             is_nsfw = is_nsfw,
-                             lang = lang,
-                             transcript_lang = transcript_lang,
-                             ocr_lang = ocr_lang,
-                             tags = tags,
-                             type_label = type_label,
-                             sortField = sortField,
-                             sortOrder = sortOrder,
+                             sentiment = NULL,
+                             is_news_related = NULL,
+                             is_potentially_misleading = NULL,
+                             is_spam = NULL,
+                             is_nsfw = NULL,
+                             lang = NULL,
+                             transcript_lang = NULL,
+                             ocr_lang = NULL,
+                             tags = NULL,
+                             type_label = NULL,
+                             sortField = NULL,
+                             sortOrder = NULL,
                              token = token)
 
   if(httr2::resp_status(response)==200){
@@ -141,6 +141,8 @@ request_messages <- function(
       dplyr::filter(.data$name=='totalPages') %>%
       purrr::pluck('value') %>%
       unlist()
+
+    if(totalPages != 0) {
 
     data <- purrr::map(.x = page:totalPages,
                        .f = ~fetch_messages(query = query,
@@ -172,8 +174,7 @@ request_messages <- function(
       purrr::reduce(dplyr::bind_rows)
 
     return(data)
-
-  }
+    } }
 
   else stop(
     stringr::str_c(

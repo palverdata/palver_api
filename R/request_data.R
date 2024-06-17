@@ -244,7 +244,11 @@ request_data <- function(
                                sortOrder = sortOrder,
                                token = token)
 
-    if(httr2::resp_status(response)==200){
+    if(httr2::resp_status(response)==200 &
+       meta %>%
+       dplyr::filter(.data$name=='totalPages') %>%
+       purrr::pluck('value') %>%
+       unlist() != 0){
 
       meta <- httr2::resp_body_json(response) %>%
         purrr::pluck('meta') %>%
@@ -254,6 +258,7 @@ request_data <- function(
         dplyr::filter(.data$name=='totalPages') %>%
         purrr::pluck('value') %>%
         unlist()
+      if(totalPages != 0) {
 
       data <- purrr::map(.x = page:totalPages,
                          .f = ~fetch_messages(query = query,
@@ -286,7 +291,7 @@ request_data <- function(
 
       return(data)
 
-    }
+    }}
 
     else stop(
       stringr::str_c(
