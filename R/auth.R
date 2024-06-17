@@ -10,7 +10,7 @@
 get_token <- function(email,password){
 
   response <- httr::POST(
-    url = 'https://mercury-api.anax.com.br/api/login',
+    url = 'https://mercury-api.anax.com.br/api/auth',
     query = list('email' = email,
                  'password' = password),
     config = httr::add_headers('Accept' = 'application/json',
