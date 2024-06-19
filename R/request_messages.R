@@ -174,7 +174,9 @@ request_messages <- function(
       purrr::reduce(dplyr::bind_rows)
 
     return(data)
-    } }
+    }
+
+    else stop('This request has null data')}
 
   else stop(
     stringr::str_c(

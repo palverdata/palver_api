@@ -291,7 +291,9 @@ request_data <- function(
 
       return(data)
 
-    }}
+      }
+      else stop('This request has null data')
+      }
 
     else stop(
       stringr::str_c(
