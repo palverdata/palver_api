@@ -9,27 +9,19 @@
 
 get_token <- function(email,password){
 
-  response <- httr::POST(
-    url = 'https://mercury-api.anax.com.br/api/auth',
-    query = list('email' = email,
-                 'password' = password),
-    config = httr::add_headers('Accept' = 'application/json',
-                               'Content-Type' = 'application/json'),
-    encode = 'form'
-  )
+  response <- httr2::request('https://mercury-api.anax.com.br/api/auth') %>%
+    httr2::req_method('POST') %>%
+    httr2::req_headers('Accept' = 'application/json','Content-Type' = 'application/json') %>%
+    httr2::req_body_json(list('email' = email,'password' = password)) %>%
+    httr2::req_perform()
 
-  if (httr::status_code(response)==200){
+  if (httr2::resp_status(response)==200){
     return(
-      httr::content(response) %>%
+      httr2::resp_body_json(response) %>%
         purrr::pluck('token')
     )}
 
-  else stop(
-    stringr::str_c(
-      httr::content(response),
-      ' [', httr::status_code(response),']'
-    )
-  )
+  else stop(httr2::resp_status_desc(response))
 }
 
 
