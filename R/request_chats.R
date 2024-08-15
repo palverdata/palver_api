@@ -6,7 +6,7 @@
 #' @param source Groups' origin platform
 #' @param sortField Sort Field
 #' @param sortOrder Sort Order
-#' @param token Object with your token from palver::get_token
+#' @param token Object with your token from function get_token
 #'
 #' @return A tibble from data required
 #' @export
@@ -17,7 +17,7 @@ request_chats <- function(
     query = NULL,
     id = NULL,
     name = NULL,
-    source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
+    source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
     sortField = c('name', 'participants'),
     sortOrder = c('desc','asc'),
     token){
@@ -29,34 +29,35 @@ request_chats <- function(
   page <- 1
   perPage <- 1000
 
-  fetch_chats <- function(query,
+  fetch_chats <- function(query = NULL,
                           id = NULL,
                           page = 1,
                           perPage = 1000,
                           name = NULL,
-                          source =  c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'televsion', 'youtube', 'twitter'),
+                          source =  c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
                           sortField = c('name', 'participants'),
                           sortOrder = c('desc','asc'),
                           token){
+
     url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/chats')
 
-    parameters <- tibble::tibble('query' = query,
+    parameters <- list('query' = query,
                        'id'= id,
                        'name' = name,
                        'page' = page,
                        'perPage' = perPage,
                        'sortField' = sortField,
                        'sortOrder' = sortOrder) %>%
-      jsonify::to_json(unbox = T, by = 'column')
+      purrr::discard(is.null)
 
     httr2::request(url) |>
+      httr2::req_method('POST') |>
       httr2::req_headers('Accept' = 'application/json',
                          'Content-Type' = 'application/json') |>
       httr2::req_auth_bearer_token(token) |>
-      httr2::req_method('POST') |>
-      httr2::req_body_raw(body = parameters, type = 'application/json') |>
+      httr2::req_body_json(data = parameters) |>
       httr2::req_perform()
-    }
+  }
 
   response <- fetch_chats(query = query,
                           id = id,
@@ -96,10 +97,5 @@ request_chats <- function(
 
   }
 
-  else stop(
-    stringr::str_c(
-      httr2::resp_status(response),
-      ' [', httr2::resp_status_desc(response),']'
-    )
-  )
+  else stop(httr2::resp_status_desc(response))
 }
