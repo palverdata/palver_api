@@ -173,7 +173,7 @@ request_messages <- function(
                          tibble::enframe(value = "value") %>%
                          tidyr::unnest_wider("value", names_repair = 'minimal')
     ) %>%
-      purrr::reduce(bind_rows)
+      purrr::reduce(dplyr::bind_rows)
 
     return(data)
   }

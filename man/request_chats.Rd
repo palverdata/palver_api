@@ -9,7 +9,7 @@ request_chats(
   id = NULL,
   name = NULL,
   source = c("whatsapp", "telegram", "reddit", "tiktok", "press", "news", "radio.medias",
-    "televsion", "youtube", "twitter"),
+    "television", "youtube", "twitter"),
   sortField = c("name", "participants"),
   sortOrder = c("desc", "asc"),
   token
@@ -28,7 +28,7 @@ request_chats(
 
 \item{sortOrder}{Sort Order}
 
-\item{token}{Object with your token from palver::get_token}
+\item{token}{Object with your token from function get_token}
 }
 \value{
 A tibble from data required

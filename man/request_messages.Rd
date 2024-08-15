@@ -12,7 +12,7 @@ request_messages(
   endDate,
   sentiment = NULL,
   source = c("whatsapp", "telegram", "reddit", "tiktok", "press", "news", "radio.medias",
-    "televsion", "youtube", "twitter"),
+    "television", "youtube", "twitter"),
   is_spam = NULL,
   is_nsfw = NULL,
   is_news_related = NULL,
@@ -64,7 +64,7 @@ request_messages(
 
 \item{sortOrder}{Sort Order}
 
-\item{token}{Object with your token from palver::get_token}
+\item{token}{Object with your token from function get_token}
 }
 \value{
 A tibble from data required
