@@ -27,7 +27,7 @@ date_iso_format <- function(day,
     min = min,
     sec = sec,
     tz = timezone) |>
-    lubridate::format_ISO8601()
+    lubridate::format_ISO8601(usetz=T)
 
   return(datetime)
 }
