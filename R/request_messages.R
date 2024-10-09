@@ -49,12 +49,8 @@ request_messages <- function(
   sortOrder <- match.arg(sortOrder)
   source <- match.arg(source)
 
-  page <- 1
-  perPage <- 1000
-
-
   fetch_messages <- function(query,
-                             page = 1,
+                             page,
                              perPage = 1000,
                              country = NULL,
                              region = NULL,
@@ -103,7 +99,7 @@ request_messages <- function(
       purrr::discard(is.null)
 
 
-    response <- httr2::request(url) |>
+    httr2::request(url) |>
       httr2::req_method('POST') |>
       httr2::req_auth_bearer_token(token) |>
       httr2::req_headers('Accept' = 'application/json',
@@ -114,8 +110,8 @@ request_messages <- function(
   }
 
   response <- fetch_messages(query = query,
-                             page = page,
-                             perPage = perPage,
+                             page = 1,
+                             perPage = 100,
                              country = country,
                              region = region,
                              startDate = startDate,
@@ -146,10 +142,12 @@ request_messages <- function(
       purrr::pluck('value') %>%
       unlist()
 
-    data <- purrr::map(.x = page:totalPages,
+    if(totalPages != 0) {
+
+    data <- purrr::map(.x = 1:totalPages,
                        ~fetch_messages(query = query,
                                        page = .x,
-                                       perPage = perPage,
+                                       perPage = 100,
                                        country = country,
                                        region = region,
                                        startDate = startDate,
@@ -168,15 +166,19 @@ request_messages <- function(
                                        sortField = sortField,
                                        sortOrder = sortOrder,
                                        token = token) %>%
-                         httr2::resp_body_json(.) %>%
+                         httr2::resp_body_json() %>%
                          purrr::pluck('data') %>%
-                         tibble::enframe(value = "value") %>%
-                         tidyr::unnest_wider("value", names_repair = 'minimal')
+                         tibble::enframe() %>%
+                         tidyr::unnest_wider('value', names_repair = 'minimal'),
+                       .progress = T
     ) %>%
       purrr::reduce(dplyr::bind_rows)
 
     return(data)
-  }
-  else stop(httr2::resp_status_desc(response))
+    }
+
+    else stop(stringr::str_c('There are ', totalPages, ' documents'))
 
   }
+  else stop(httr2::resp_status_desc(response))
+}
