@@ -2,18 +2,21 @@
 % Please edit documentation in R/request_trends.R
 \name{request_trends}
 \alias{request_trends}
-\title{Request Trend Data}
+\title{Request Time Series Data}
 \usage{
 request_trends(
   query,
   groupby = NULL,
-  interval = c("daily", "weekly", "monthly", "yearly"),
+  source = c("whatsapp", "telegram", "reddit", "tiktok", "press", "news", "radio.medias",
+    "television", "youtube", "twitter"),
+  time_format = c("hourly", "daily", "weekly", "monthly", "yearly"),
   country = NULL,
   region = NULL,
   startDate,
   endDate,
   sentiment = NULL,
-  source = NULL,
+  is_news_related = NULL,
+  is_potentially_misleading = NULL,
   is_spam = NULL,
   is_nsfw = NULL,
   lang = NULL,
@@ -29,9 +32,11 @@ request_trends(
 
 \item{groupby}{The field (or fields, comma separated) to group and pivot the results. One or two (maximum) of: country, region, sentiment, source, lang, tags.}
 
-\item{interval}{Interval to group the results. One of: hourly, daily, weekly, monthly, yearly}
+\item{source}{Source of the message}
 
-\item{country}{Country ISO code}
+\item{time_format}{Interval to group the results. One of: hourly, daily, weekly, monthly, yearly}
+
+\item{country}{Country from area code}
 
 \item{region}{Brazilian region code, (only if country is BR)}
 
@@ -41,7 +46,9 @@ request_trends(
 
 \item{sentiment}{Sentiment of the message}
 
-\item{source}{Source of the message}
+\item{is_news_related}{Include or exclude messages that are related to news}
+
+\item{is_potentially_misleading}{Include or exclude messages that contains news and are classified as potentially misleading}
 
 \item{is_spam}{Include or exclude messages classified as spam}
 
@@ -63,5 +70,5 @@ request_trends(
 A tibble from data required
 }
 \description{
-Request Trend Data
+Request Time Series Data
 }
