@@ -79,6 +79,7 @@ request_messages <- function(
 
     parameters <- list('query' = query,
                        'page' = page,
+                       'source' = source,
                        'perPage' = perPage,
                        'country' = country,
                        'region' = region,
