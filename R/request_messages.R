@@ -114,6 +114,7 @@ request_messages <- function(
                              page = 1,
                              perPage = 100,
                              country = country,
+                             source = source,
                              region = region,
                              startDate = startDate,
                              endDate = endDate,
@@ -141,7 +142,7 @@ request_messages <- function(
     totalPages <- meta %>%
       dplyr::filter(.data$name == 'totalPages') %>%
       purrr::pluck('value') %>%
-      unlist()
+      as.numeric()
 
     if(totalPages != 0) {
 
