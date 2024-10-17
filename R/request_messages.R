@@ -142,41 +142,41 @@ request_messages <- function(
     totalPages <- meta %>%
       dplyr::filter(.data$name == 'totalPages') %>%
       purrr::pluck('value') %>%
-      as.numeric()
+      unlist()
 
     if(totalPages != 0) {
 
-    data <- purrr::map(.x = 1:totalPages,
-                       ~fetch_messages(query = query,
-                                       page = .x,
-                                       perPage = 100,
-                                       country = country,
-                                       region = region,
-                                       startDate = startDate,
-                                       endDate = endDate,
-                                       sentiment = sentiment,
-                                       source = source,
-                                       is_spam = is_spam,
-                                       is_nsfw = is_nsfw,
-                                       is_news_related = is_news_related,
-                                       is_potentially_misleading = is_potentially_misleading,
-                                       lang = lang,
-                                       transcript_lang = transcript_lang,
-                                       ocr_lang = ocr_lang,
-                                       tags = tags,
-                                       type_label = type_label,
-                                       sortField = sortField,
-                                       sortOrder = sortOrder,
-                                       token = token) %>%
-                         httr2::resp_body_json() %>%
-                         purrr::pluck('data') %>%
-                         tibble::enframe() %>%
-                         tidyr::unnest_wider('value', names_repair = 'minimal'),
-                       .progress = T
-    ) %>%
-      purrr::reduce(dplyr::bind_rows)
+      data <- purrr::map(.x = 1:totalPages,
+                         ~fetch_messages(query = query,
+                                         page = .x,
+                                         perPage = 100,
+                                         country = country,
+                                         region = region,
+                                         startDate = startDate,
+                                         endDate = endDate,
+                                         sentiment = sentiment,
+                                         source = source,
+                                         is_spam = is_spam,
+                                         is_nsfw = is_nsfw,
+                                         is_news_related = is_news_related,
+                                         is_potentially_misleading = is_potentially_misleading,
+                                         lang = lang,
+                                         transcript_lang = transcript_lang,
+                                         ocr_lang = ocr_lang,
+                                         tags = tags,
+                                         type_label = type_label,
+                                         sortField = sortField,
+                                         sortOrder = sortOrder,
+                                         token = token) %>%
+                           httr2::resp_body_json() %>%
+                           purrr::pluck('data') %>%
+                           tibble::enframe() %>%
+                           tidyr::unnest_wider('value', names_repair = 'minimal'),
+                         .progress = T
+      ) %>%
+        purrr::reduce(dplyr::bind_rows)
 
-    return(data)
+      return(data)
     }
 
     else stop(stringr::str_c('There are ', totalPages, ' documents'))
