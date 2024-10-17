@@ -99,10 +99,12 @@ request_messages <- function(
       purrr::discard(is.null)
 
 
-    httr2::request(url) |>
-      httr2::req_method('POST') |>
-      httr2::req_auth_bearer_token(token) |>
-      httr2::req_body_json(data = parameters) |>
+    httr2::request(url) %>%
+      httr2::req_method('POST') %>%
+      httr2::req_auth_bearer_token(token) %>%
+      httr2::req_headers('accept' = 'application/json',
+                         'Content-Type' = 'application/json') %>%
+      httr2::req_body_json(data = parameters) %>%
       httr2::req_perform()
 
   }
