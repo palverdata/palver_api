@@ -50,7 +50,7 @@ request_messages <- function(
   source <- match.arg(source)
 
   fetch_messages <- function(query,
-                             page,
+                             page = 1,
                              perPage = 1000,
                              country = NULL,
                              region = NULL,
@@ -149,7 +149,7 @@ request_messages <- function(
       data <- purrr::map(.x = 1:totalPages,
                          ~fetch_messages(query = query,
                                          page = .x,
-                                         perPage = 100,
+                                         perPage = 10,
                                          country = country,
                                          region = region,
                                          startDate = startDate,
