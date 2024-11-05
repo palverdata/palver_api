@@ -51,7 +51,7 @@ request_messages <- function(
 
   fetch_messages <- function(query,
                              page = 1,
-                             perPage = 1000,
+                             perPage = 100,
                              country = NULL,
                              region = NULL,
                              startDate,
@@ -148,7 +148,7 @@ request_messages <- function(
       data <- purrr::map(.x = 1:totalPages,
                          ~fetch_messages(query = query,
                                          page = .x,
-                                         perPage = 10,
+                                         perPage = 100,
                                          country = country,
                                          region = region,
                                          startDate = startDate,
