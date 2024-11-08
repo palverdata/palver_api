@@ -17,7 +17,7 @@ request_chats <- function(
     name = NULL,
     source = c('whatsapp', 'telegram', 'reddit', 'press', 'news', 'radio.medias', 'youtube', 'twitter'),
     token){
-  
+
   source <- match.arg(source)
 
   page <- 1
