@@ -8,10 +8,8 @@ request_chats(
   query = NULL,
   id = NULL,
   name = NULL,
-  source = c("whatsapp", "telegram", "reddit", "tiktok", "press", "news", "radio.medias",
-    "television", "youtube", "twitter"),
-  sortField = c("name", "participants"),
-  sortOrder = c("desc", "asc"),
+  source = c("whatsapp", "telegram", "reddit", "press", "news", "radio.medias",
+    "youtube", "twitter"),
   token
 )
 }
@@ -23,10 +21,6 @@ request_chats(
 \item{name}{Exact group name}
 
 \item{source}{Groups' origin platform}
-
-\item{sortField}{Sort Field}
-
-\item{sortOrder}{Sort Order}
 
 \item{token}{Object with your token from function get_token}
 }
