@@ -11,7 +11,8 @@ request_data(
   startDate,
   endDate,
   sentiment = NULL,
-  source = c("whatsapp", "telegram"),
+  source = c("whatsapp", "telegram", "press", "news", "radio.medias", "reddit",
+    "youtube", "twitter"),
   is_spam = NULL,
   is_nsfw = NULL,
   is_news_related = NULL,
@@ -31,7 +32,7 @@ request_data(
 
 \item{country}{Country ISO code}
 
-\item{region}{Brazilian region code, (only if country is BR)}
+\item{region}{Region code}
 
 \item{startDate}{Start date in ISO format}
 
