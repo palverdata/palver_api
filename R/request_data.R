@@ -2,7 +2,7 @@
 #'
 #' @param query Query in lucene's syntax
 #' @param country Country ISO code
-#' @param region Brazilian region code, (only if country is BR)
+#' @param region Region code
 #' @param startDate Start date in ISO format
 #' @param endDate End date in ISO format
 #' @param sentiment Sentiment of the message
@@ -31,7 +31,7 @@ request_data <- function(
     startDate,
     endDate,
     sentiment = NULL,
-    source = c('whatsapp', 'telegram'),
+    source = c('whatsapp', 'telegram', 'press', 'news', 'radio.medias', 'reddit', 'youtube', 'twitter'),
     is_spam = NULL,
     is_nsfw = NULL,
     is_news_related = NULL,
