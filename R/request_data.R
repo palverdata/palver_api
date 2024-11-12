@@ -87,9 +87,7 @@ request_data <- function(
     chats_data <- purrr::map(.x = query_chat,
                                  ~ palver::request_chats(query = .x,
                                                  source = source,
-                                                 token = token,
-                                                 sortField = 'name',
-                                                 sortOrder = 'asc') %>%
+                                                 token = token) %>%
                                dplyr::select(-1) %>%
                                dplyr::rename(chat_name = .data$name,
                                              chat_id = .data$id)) %>%
