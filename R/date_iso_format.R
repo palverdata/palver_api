@@ -17,7 +17,7 @@ date_iso_format <- function(day,
                             hour = 0,
                             min = 0,
                             sec = 0,
-                            timezone = 'UTC'){
+                            timezone = 'America/Sao_Paulo'){
 
   datetime <- lubridate::make_datetime(
     year = year,
