@@ -4,15 +4,7 @@
 \alias{date_iso_format}
 \title{Convert date into ISO date format}
 \usage{
-date_iso_format(
-  day,
-  month,
-  year,
-  hour = 0,
-  min = 0,
-  sec = 0,
-  timezone = "America/Sao_Paulo"
-)
+date_iso_format(day, month, year, hour = 0, min = 0, sec = 0, timezone = "UTC")
 }
 \arguments{
 \item{day}{Day in format DD}
