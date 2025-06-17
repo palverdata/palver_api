@@ -7,8 +7,8 @@
 #' @param endDate End date in ISO format
 #' @param sentiment Sentiment of the message
 #' @param source Source of the message
-#' @param is_spam Include or exclude messages classified as spam
-#' @param is_nsfw Include or exclude messages classified as NSFW
+#' @param spam Include or exclude messages classified as spam
+#' @param nsfw Include or exclude messages classified as NSFW
 #' @param is_news_related Iclude or exclude messages that are related to news
 #' @param is_potentially_misleading Include or exclude messages that contains news and are classified as potentially misleading
 #' @param lang Language of the message
@@ -32,8 +32,8 @@ request_messages <- function(
     endDate,
     sentiment = NULL,
     source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
-    is_spam = NULL,
-    is_nsfw = NULL,
+    spam = NULL,
+    nsfw = NULL,
     is_news_related = NULL,
     is_potentially_misleading = NULL,
     lang = NULL,
@@ -50,7 +50,7 @@ request_messages <- function(
   source <- match.arg(source)
 
   fetch_messages <- function(query,
-                             page = 1,
+                             page,
                              perPage = 100,
                              country = NULL,
                              region = NULL,
@@ -58,8 +58,8 @@ request_messages <- function(
                              endDate,
                              sentiment = NULL,
                              source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
-                             is_spam = NULL,
-                             is_nsfw = NULL,
+                             spam = NULL,
+                             nsfw = NULL,
                              is_news_related = NULL,
                              is_potentially_misleading = NULL,
                              lang = NULL,
@@ -75,27 +75,28 @@ request_messages <- function(
     sortOrder <- match.arg(sortOrder)
     source <- match.arg(source)
 
-    url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/messages')
+    url <- stringr::str_c('https://mercury-api.palver.com.br/api/', source, '/messages')
 
-    parameters <- list('query' = query,
-                       'page' = page,
-                       'perPage' = perPage,
-                       'country' = country,
-                       'region' = region,
-                       'startDate' = startDate,
-                       'endDate' = endDate,
-                       'sentiment' = sentiment,
-                       'is_news_related' = is_news_related,
-                       'is_potentially_misleading' = is_potentially_misleading,
-                       'is_spam' = is_spam,
-                       'is_nsfw' = is_nsfw,
-                       'lang' = lang,
-                       'transcript_lang' = transcript_lang,
-                       'ocr_lang' = ocr_lang,
-                       'tags' = tags,
-                       'type_label' = type_label,
-                       'sortField' = sortField,
-                       'sortOrder' = sortOrder) %>%
+    parameters <- list(query = query,
+                       page = page,
+                       perPage = perPage,
+                       sortOrder = sortOrder,
+                       sortField = sortField,
+                       country = country,
+                       region = region,
+                       startDate = startDate,
+                       endDate = endDate,
+                       sentiment = sentiment,
+                       is_news_related = is_news_related,
+                       is_potentially_misleading = is_potentially_misleading,
+                       spam = spam,
+                       nsfw = nsfw,
+                       lang = lang,
+                       transcript_lang = transcript_lang,
+                       ocr_lang = ocr_lang,
+                       tags = tags,
+                       type_label = type_label
+    ) %>%
       purrr::discard(is.null)
 
 
@@ -120,8 +121,8 @@ request_messages <- function(
                              sentiment = sentiment,
                              is_news_related = is_news_related,
                              is_potentially_misleading = is_potentially_misleading,
-                             is_spam = is_spam,
-                             is_nsfw = is_nsfw,
+                             spam = spam,
+                             nsfw = nsfw,
                              lang = lang,
                              transcript_lang = transcript_lang,
                              ocr_lang = ocr_lang,
@@ -130,7 +131,6 @@ request_messages <- function(
                              sortField = sortField,
                              sortOrder = sortOrder,
                              token = token)
-
 
   if (httr2::resp_status(response) == 200) {
 
@@ -155,8 +155,8 @@ request_messages <- function(
                                          endDate = endDate,
                                          sentiment = sentiment,
                                          source = source,
-                                         is_spam = is_spam,
-                                         is_nsfw = is_nsfw,
+                                         spam = spam,
+                                         nsfw = nsfw,
                                          is_news_related = is_news_related,
                                          is_potentially_misleading = is_potentially_misleading,
                                          lang = lang,
@@ -175,11 +175,24 @@ request_messages <- function(
       ) %>%
         purrr::reduce(dplyr::bind_rows)
 
+      data <- data %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), ~ {
+          if (is.list(.)) {
+            sapply(., function(x) jsonlite::toJSON(x, auto_unbox = TRUE))
+          } else {
+            as.character(.)
+          }
+        }))
+
       return(data)
     }
 
-    else stop(stringr::str_c('There are ', totalPages, ' documents'))
-
+    else {
+      stop(stringr::str_c('There are ', totalPages, ' documents'))
+    }
   }
-  else stop(httr2::resp_status_desc(response))
+
+  else {
+    stop(httr2::resp_status_desc(response))
+  }
 }

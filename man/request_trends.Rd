@@ -17,8 +17,8 @@ request_trends(
   sentiment = NULL,
   is_news_related = NULL,
   is_potentially_misleading = NULL,
-  is_spam = NULL,
-  is_nsfw = NULL,
+  spam = NULL,
+  nsfw = NULL,
   lang = NULL,
   transcript_lang = NULL,
   ocr_lang = NULL,
@@ -50,9 +50,9 @@ request_trends(
 
 \item{is_potentially_misleading}{Include or exclude messages that contains news and are classified as potentially misleading}
 
-\item{is_spam}{Include or exclude messages classified as spam}
+\item{spam}{Include or exclude messages classified as spam}
 
-\item{is_nsfw}{Include or exclude messages classified as NSFW}
+\item{nsfw}{Include or exclude messages classified as NSFW}
 
 \item{lang}{Language of the message}
 

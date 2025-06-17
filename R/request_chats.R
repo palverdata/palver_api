@@ -5,6 +5,7 @@
 #' @param name Exact group name
 #' @param source Groups' origin platform
 #' @param token Object with your token from function get_token
+#' @param sortOrder Sort Order
 #'
 #' @return A tibble from data required
 #' @export
@@ -15,9 +16,12 @@ request_chats <- function(
     query = NULL,
     id = NULL,
     name = NULL,
-    source = c('whatsapp', 'telegram', 'reddit', 'press', 'news', 'radio.medias', 'youtube', 'twitter'),
+    source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
+    sortOrder = c('desc','asc'),
     token){
 
+  #sortField <- match.arg(sortField)
+  sortOrder <- match.arg(sortOrder)
   source <- match.arg(source)
 
   page <- 1
@@ -28,20 +32,20 @@ request_chats <- function(
                           page = 1,
                           perPage = 1000,
                           name = NULL,
-                          source =  c('whatsapp', 'telegram', 'reddit', 'press', 'news', 'radio.medias', 'youtube', 'twitter'),
-                          sortField = 'name',
-                          sortOrder = 'asc',
+                          source =  c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
+                          sortField = NULL,
+                          sortOrder = c('desc','asc'),
                           token){
 
-    url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/chats')
+    url <- stringr::str_c('https://mercury-api.palver.com.br/api/', source, '/chats')
 
-    parameters <- list('query' = query,
-                       'id'= id,
-                       'name' = name,
-                       'page' = page,
-                       'perPage' = perPage,
-                       'sortField' = sortField,
-                       'sortOrder' = sortOrder) %>%
+    parameters <- list(query = query,
+                       page = page,
+                       perPage = perPage,
+                       sortOrder = sortOrder,
+                       #sortField = sortField,
+                       id = id,
+                       name = name) %>%
       purrr::discard(is.null)
 
     httr2::request(url) %>%
@@ -57,6 +61,8 @@ request_chats <- function(
                           id = id,
                           name = name,
                           source = source,
+                          #sortField = sortField,
+                          sortOrder = sortOrder,
                           token = token)
 
   if(httr2::resp_status(response)==200){
@@ -74,6 +80,8 @@ request_chats <- function(
                        .f = ~fetch_chats(query = query,
                                          id = id,
                                          source = source,
+                                         #sortField = sortField,
+                                         sortOrder = sortOrder,
                                          token = token,
                                          page = .x) %>%
                          httr2::resp_body_json(.) %>%
@@ -87,5 +95,7 @@ request_chats <- function(
 
   }
 
-  else stop(httr2::resp_status_desc(response))
+  else {
+    stop(httr2::resp_status_desc(response))
+  }
 }

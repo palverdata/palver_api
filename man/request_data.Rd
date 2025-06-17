@@ -11,10 +11,9 @@ request_data(
   startDate,
   endDate,
   sentiment = NULL,
-  source = c("whatsapp", "telegram", "press", "news", "radio.medias", "reddit",
-    "youtube", "twitter"),
-  is_spam = NULL,
-  is_nsfw = NULL,
+  source = c("whatsapp", "telegram"),
+  spam = NULL,
+  nsfw = NULL,
   is_news_related = NULL,
   is_potentially_misleading = NULL,
   lang = NULL,
@@ -42,9 +41,9 @@ request_data(
 
 \item{source}{Source of the message}
 
-\item{is_spam}{Include or exclude messages classified as spam}
+\item{spam}{Include or exclude messages classified as spam}
 
-\item{is_nsfw}{Include or exclude messages classified as NSFW}
+\item{nsfw}{Include or exclude messages classified as NSFW}
 
 \item{is_news_related}{Iclude or exclude messages that are related to news}
 

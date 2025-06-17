@@ -11,8 +11,8 @@
 #' @param source Source of the message
 #' @param is_news_related Include or exclude messages that are related to news
 #' @param is_potentially_misleading Include or exclude messages that contains news and are classified as potentially misleading
-#' @param is_spam Include or exclude messages classified as spam
-#' @param is_nsfw Include or exclude messages classified as NSFW
+#' @param spam Include or exclude messages classified as spam
+#' @param nsfw Include or exclude messages classified as NSFW
 #' @param lang Language of the message
 #' @param transcript_lang Language of the audio transcript
 #' @param ocr_lang Language of the image OCR
@@ -36,8 +36,8 @@ request_trends <- function(
     sentiment = NULL,
     is_news_related = NULL,
     is_potentially_misleading = NULL,
-    is_spam = NULL,
-    is_nsfw = NULL,
+    spam = NULL,
+    nsfw = NULL,
     lang = NULL,
     transcript_lang = NULL,
     ocr_lang = NULL,
@@ -48,7 +48,6 @@ request_trends <- function(
   time_format <- match.arg(time_format)
   source <- match.arg(source)
 
-
   fetch_trends <- function(query,
                            country = NULL,
                            region = NULL,
@@ -57,8 +56,8 @@ request_trends <- function(
                            sentiment = NULL,
                            is_news_related = NULL,
                            is_potentially_misleading = NULL,
-                           is_spam = NULL,
-                           is_nsfw = NULL,
+                           spam = NULL,
+                           nsfw = NULL,
                            lang = NULL,
                            transcript_lang = NULL,
                            ocr_lang = NULL,
@@ -69,26 +68,26 @@ request_trends <- function(
                            source = c('whatsapp', 'telegram', 'reddit', 'tiktok', 'press', 'news', 'radio.medias', 'television', 'youtube', 'twitter'),
                            token){
 
-    parameters <- list('query' = query,
-                       'country' = country,
-                       'region' = region,
-                       'startDate' = startDate,
-                       'endDate' = endDate,
-                       'sentiment' = sentiment,
-                       'is_news_related' = is_news_related,
-                       'is_potentially_misleading' = is_potentially_misleading,
-                       'is_spam' = is_spam,
-                       'is_nsfw' = is_nsfw,
-                       'lang' = lang,
-                       'transcript_lang' = transcript_lang,
-                       'ocr_lang' = ocr_lang,
-                       'tags' = tags,
-                       'type_label' = type_label,
-                       'groupby' = groupby,
-                       'time_format' = time_format) %>%
+    parameters <- list(query = query,
+                       country = country,
+                       region = region,
+                       startDate = startDate,
+                       endDate = endDate,
+                       sentiment = sentiment,
+                       is_news_related = is_news_related,
+                       is_potentially_misleading = is_potentially_misleading,
+                       spam = spam,
+                       nsfw = nsfw,
+                       lang = lang,
+                       transcript_lang = transcript_lang,
+                       ocr_lang = ocr_lang,
+                       tags = tags,
+                       type_label = type_label,
+                       time_format = time_format,
+                       groupby = groupby) %>%
       purrr::discard(is.null)
 
-    url <- stringr::str_c('https://mercury-api.anax.com.br/api/', source, '/timeseries')
+    url <- stringr::str_c('https://mercury-api.palver.com.br/api/', source, '/timeseries')
 
     httr2::request(url) |>
       httr2::req_method('POST') |>
@@ -106,8 +105,8 @@ request_trends <- function(
                            sentiment = sentiment,
                            is_news_related = is_news_related,
                            is_potentially_misleading = is_potentially_misleading,
-                           is_spam = is_spam,
-                           is_nsfw = is_nsfw,
+                           spam = spam,
+                           nsfw = nsfw,
                            lang = lang,
                            transcript_lang = transcript_lang,
                            ocr_lang = ocr_lang,
@@ -121,24 +120,24 @@ request_trends <- function(
   if(httr2::resp_status(response)==200){
 
     data <- fetch_trends(query = query,
-                           country = country,
-                           region = region,
-                           startDate = startDate,
-                           endDate = endDate,
-                           sentiment = sentiment,
-                           is_news_related = is_news_related,
-                           is_potentially_misleading = is_potentially_misleading,
-                           is_spam = is_spam,
-                           is_nsfw = is_nsfw,
-                           lang = lang,
-                           transcript_lang = transcript_lang,
-                           ocr_lang = ocr_lang,
-                           tags = tags,
-                           type_label = type_label,
-                           groupby = groupby,
-                           time_format = time_format,
-                           source = source,
-                           token = token) %>%
+                         country = country,
+                         region = region,
+                         startDate = startDate,
+                         endDate = endDate,
+                         sentiment = sentiment,
+                         is_news_related = is_news_related,
+                         is_potentially_misleading = is_potentially_misleading,
+                         spam = spam,
+                         nsfw = nsfw,
+                         lang = lang,
+                         transcript_lang = transcript_lang,
+                         ocr_lang = ocr_lang,
+                         tags = tags,
+                         type_label = type_label,
+                         groupby = groupby,
+                         time_format = time_format,
+                         source = source,
+                         token = token) %>%
       httr2::resp_body_json() %>%
       purrr::pluck('data') %>%
       tibble::enframe() %>%
@@ -148,7 +147,8 @@ request_trends <- function(
 
   }
 
-  else stop(httr2::resp_status_desc(response))
-
+  else {
+    stop(httr2::resp_status_desc(response))
+  }
 
 }

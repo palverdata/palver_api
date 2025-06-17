@@ -7,8 +7,8 @@
 #' @param endDate End date in ISO format
 #' @param sentiment Sentiment of the message
 #' @param source Source of the message
-#' @param is_spam Include or exclude messages classified as spam
-#' @param is_nsfw Include or exclude messages classified as NSFW
+#' @param spam Include or exclude messages classified as spam
+#' @param nsfw Include or exclude messages classified as NSFW
 #' @param is_news_related Iclude or exclude messages that are related to news
 #' @param is_potentially_misleading Include or exclude messages that contains news and are classified as potentially misleading
 #' @param lang Language of the message
@@ -31,9 +31,9 @@ request_data <- function(
     startDate,
     endDate,
     sentiment = NULL,
-    source = c('whatsapp', 'telegram', 'press', 'news', 'radio.medias', 'reddit', 'youtube', 'twitter'),
-    is_spam = NULL,
-    is_nsfw = NULL,
+    source = c('whatsapp', 'telegram'),
+    spam = NULL,
+    nsfw = NULL,
     is_news_related = NULL,
     is_potentially_misleading = NULL,
     lang = NULL,
@@ -49,16 +49,15 @@ request_data <- function(
   sortField <- match.arg(sortField)
   sortOrder <- match.arg(sortOrder)
 
-
-  messages_data <- palver::request_messages(query = query,
+  messages_data <- request_messages(query = query,
                                     country = country,
                                     region = region,
                                     startDate = startDate,
                                     endDate = endDate,
                                     sentiment = sentiment,
                                     source = source,
-                                    is_spam = is_spam,
-                                    is_nsfw = is_nsfw,
+                                    spam = spam,
+                                    nsfw = nsfw,
                                     is_news_related = is_news_related,
                                     is_potentially_misleading = is_potentially_misleading,
                                     lang = lang,
@@ -79,19 +78,22 @@ request_data <- function(
     query_chat <- purrr::map(.x = seq(1,total_chat,100),
                              .f = ~ stringr::str_c('id:',
                                                    stringr::str_c(unlist(messages_data %>%
-                                                            dplyr::distinct(.data$chat_id) %>%
-                                                            dplyr::slice(.x:(99+.x))),
-                                                   collapse=" OR id:")))
+                                                                           dplyr::distinct(.data$chat_id) %>%
+                                                                           dplyr::slice(.x:(99+.x))),
+                                                                  collapse=" OR id:")))
 
 
     chats_data <- purrr::map(.x = query_chat,
-                                 ~ palver::request_chats(query = .x,
-                                                 source = source,
-                                                 token = token) %>%
+                             ~ request_chats(query = .x,
+                                             source = source,
+                                             token = token,
+                                             #sortField = 'name',
+                                             sortOrder = 'asc') %>%
                                dplyr::select(-1) %>%
                                dplyr::rename(chat_name = .data$name,
                                              chat_id = .data$id)) %>%
-      purrr::reduce(dplyr::bind_rows)
+      purrr::reduce(dplyr::bind_rows) %>%
+      dplyr::distinct(.data$chat_id, .keep_all = T)
 
     data <- messages_data %>%
       dplyr::left_join(chats_data, by = c('chat_id','source'))
