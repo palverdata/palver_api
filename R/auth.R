@@ -7,12 +7,12 @@
 #' @export
 
 
-get_token <- function(email,password){
+get_token <- function(email, password){
 
-  response <- httr2::request('https://mercury-api.anax.com.br/api/auth') %>%
+  response <- httr2::request('https://mercury-api.palver.com.br/api/auth') %>%
     httr2::req_method('POST') %>%
     httr2::req_headers('Accept' = 'application/json','Content-Type' = 'application/json') %>%
-    httr2::req_body_json(list('email' = email,'password' = password)) %>%
+    httr2::req_body_json(list(email = email,password = password)) %>%
     httr2::req_perform()
 
   if (httr2::resp_status(response)==200){
@@ -21,7 +21,9 @@ get_token <- function(email,password){
         purrr::pluck('token')
     )}
 
-  else stop(httr2::resp_status_desc(response))
+  else {
+    stop(httr2::resp_status_desc(response))
+  }
 }
 
 
